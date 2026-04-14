@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+    <title>JIRAMA Charge Manager - Gestion intelligente des charges</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <!-- Google API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00d4ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JIRAMA CM">
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash-screen">
+    <div class="splash-ring"></div>
+    <div class="splash-text" id="splashText">Lēck Pįrh</div>
+    <div class="splash-sub" id="splashSub"></div>
+</div>
+
+<script>
+(function() {
+    var splash = document.getElementById('splash-screen');
+    var txt    = document.getElementById('splashText');
+    var sub    = document.getElementById('splashSub');
+    if (!splash) return;
+
+    txt.style.opacity = '0';
+    txt.style.transition = 'opacity 0.5s ease';
+    setTimeout(function() { txt.style.opacity = '1'; }, 300);
+
+    setTimeout(function() {
+        txt.style.opacity = '0';
+        setTimeout(function() {
+            txt.textContent = 'JIRAMA Charge Manager';
+            txt.style.fontSize = '22px';
+            txt.style.color = 'white';
+            txt.style.opacity = '1';
+        }, 450);
+    }, 2000);
+
+    setTimeout(function() {
+        sub.textContent = 'Welcome to JCM 3.0';
+        sub.style.opacity = '0';
+        sub.style.transition = 'opacity 0.5s ease';
+        setTimeout(function() { sub.style.opacity = '1'; }, 50);
+    }, 2800);
+
+    setTimeout(function() {
+        splash.style.transition = 'opacity 0.6s ease';
+        splash.style.opacity = '0';
+        setTimeout(function() { splash.style.display = 'none'; }, 620);
+    }, 4500);
+})();
+</script>
+
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <div class="container">
+        <header class="premium-header">
+            <div class="header-glow"></div>
+            <div class="header-content">
+                <div class="logo-wrapper">
+                    <div class="logo-animation">
+                        <svg class="jirama-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="45" fill="white" stroke="#00d4ff" stroke-width="2"/>
+                            <path d="M50 20 L50 80 M35 35 L65 35 M35 65 L65 65" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M30 50 L70 50" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/>
+                            <circle cx="50" cy="50" r="8" fill="#00d4ff"/>
+                            <text x="50" y="68" text-anchor="middle" fill="#00d4ff" font-size="12" font-weight="bold">JIRAMA</text>
+                        </svg>
+                        <div class="pulse-ring"></div>
+                    </div>
+                    <div class="logo-text">
+                        <h1>JIRAMA <span>Charge Manager</span></h1>
+                        <p>Gestion intelligente des charges d'électricité et d'eau</p>
+                    </div>
+                </div>
+                <div class="header-stats">
+                    <div class="header-stat">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">Période</span>
+                            <select id="period" class="period-select"></select>
+                        </div>
+                    </div>
+                    <div class="header-stat">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">Colocataires</span>
+                            <span class="stat-value" id="headerPersonCount">0</span>
+                        </div>
+                    </div>
+                    <div class="header-stat">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">Budget total</span>
+                            <span class="stat-value" id="headerTotalBudget">0 Ar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-wave">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                    <path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,170.7C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                </svg>
+            </div>
+        </header>
+
+        <nav class="glass-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                    <div class="nav-indicator"></div>
+                </button>
+                <button class="nav-btn" data-tab="persons">
+                    <i class="fas fa-users"></i>
+                    <span>Colocataires</span>
+                    <div class="nav-indicator"></div>
+                </button>
+                <button class="nav-btn" data-tab="appliances">
+                    <i class="fas fa-plug"></i>
+                    <span>Appareils</span>
+                    <div class="nav-indicator"></div>
+                </button>
+                <button class="nav-btn" data-tab="billing">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Facturation</span>
+                    <div class="nav-indicator"></div>
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Paramètres</span>
+                    <div class="nav-indicator"></div>
+                </button>
+                <button class="nav-btn" data-tab="history">
+                    <i class="fas fa-history"></i>
+                    <span>Historique</span>
+                    <div class="nav-indicator"></div>
+                </button>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-details">
+                            <h3>Colocataires</h3>
+                            <p id="totalPersons">0</p>
+                            <span class="stat-trend">Actifs</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-plug"></i></div>
+                        <div class="stat-details">
+                            <h3>Appareils</h3>
+                            <p id="totalAppliances">0</p>
+                            <span class="stat-trend">Enregistrés</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-charging-station"></i></div>
+                        <div class="stat-details">
+                            <h3>Consommation Élec.</h3>
+                            <p id="totalElecConsumption">0 kWh</p>
+                            <span class="stat-trend">Ce mois</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-tint"></i></div>
+                        <div class="stat-details">
+                            <h3>Consommation Eau</h3>
+                            <p id="totalWaterConsumption">0 m³</p>
+                            <span class="stat-trend">Ce mois</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="action-btn primary" onclick="switchTab('billing')"><i class="fas fa-receipt"></i><span>Voir la facture</span></button>
+                    <button class="action-btn secondary" onclick="generateInvoice()"><i class="fas fa-file-pdf"></i><span>Télécharger PDF</span></button>
+                    <button class="action-btn tertiary" onclick="showBudgetSimulator()"><i class="fas fa-calculator"></i><span>Simulateur budget</span></button>
+                    <button class="action-btn info" onclick="exportData()"><i class="fas fa-file-export"></i><span>Exporter</span></button>
+                    <button class="action-btn warning" onclick="importData()"><i class="fas fa-file-import"></i><span>Importer</span></button>
+                    <button class="action-btn excel" onclick="exportToExcel()"><i class="fas fa-file-excel"></i><span>Export Excel</span></button>
+                    <button class="action-btn scan" onclick="openScanModal()"><i class="fas fa-qrcode"></i><span>Scanner facture</span></button>
+                </div>
+
+                <div class="widgets-grid">
+                    <div class="widget-card"><div class="widget-header"><i class="fas fa-clock"></i><h4>Prochaines échéances</h4></div><div id="upcomingDueWidget" class="widget-content"><div class="widget-loading">Chargement...</div></div></div>
+                    <div class="widget-card"><div class="widget-header"><i class="fas fa-coins"></i><h4>Paiements en attente</h4></div><div id="pendingPaymentsWidget" class="widget-content"><div class="widget-loading">Chargement...</div></div></div>
+                    <div class="widget-card"><div class="widget-header"><i class="fas fa-chart-simple"></i><h4>Budget restant</h4></div><div id="budgetRemainingWidget" class="widget-content"><div class="widget-loading">Chargement...</div></div></div>
+                    <div class="widget-card"><div class="widget-header"><i class="fas fa-plug"></i><h4>Appareils les plus énergivores</h4></div><div id="topAppliancesWidget" class="widget-content"><div class="widget-loading">Chargement...</div></div></div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card"><div class="card-header"><h3><i class="fas fa-chart-pie"></i> Répartition Électricité</h3><button class="icon-btn" onclick="refreshChart('elec')"><i class="fas fa-sync-alt"></i></button></div><div class="elec-chart-wrap"><canvas id="elecChart"></canvas></div></div>
+                    <div class="chart-card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> Top Consommateurs</h3><button class="icon-btn" onclick="refreshChart('appliances')"><i class="fas fa-sync-alt"></i></button></div><canvas id="appliancesChart"></canvas></div>
+                </div>
+
+                <div class="evolution-card chart-card"><div class="card-header"><h3><i class="fas fa-chart-line"></i> Évolution mensuelle des charges</h3><button class="icon-btn" onclick="refreshEvolutionChart()"><i class="fas fa-sync-alt"></i></button></div><canvas id="evolutionChart"></canvas></div>
+
+                <div class="forecast-card chart-card"><div class="card-header"><h3><i class="fas fa-chart-line"></i> Prévision du mois</h3><i class="fas fa-chart-line"></i></div><div id="forecastContent"><div class="forecast-loading">Calcul en cours...</div></div></div>
+
+                <div class="info-grid">
+                    <div class="alerts-card"><div class="card-header"><h3><i class="fas fa-bell"></i> Alertes</h3></div><div id="alertsList"></div></div>
+                    <div class="tips-card"><div class="card-header"><h3><i class="fas fa-lightbulb"></i> Éco-Conseils</h3></div><div id="tipsList"></div></div>
+                </div>
+
+                <div class="common-expenses-card chart-card"><div class="card-header"><h3><i class="fas fa-shopping-cart"></i> Dépenses communes</h3><button class="btn-glow" onclick="showExpenseModal()"><i class="fas fa-plus"></i> Ajouter</button></div><div id="commonExpensesList"></div></div>
+            </div>
+
+            <!-- Persons Tab -->
+            <div id="persons" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Gestion des colocataires</h2>
+                    <div class="header-actions">
+                        <button class="btn-glow" onclick="showPersonModal()"><i class="fas fa-user-plus"></i> Ajouter un colocataire</button>
+                        <button class="btn-outline" onclick="showGuestModal()"><i class="fas fa-user-clock"></i> Gérer les invités</button>
+                    </div>
+                </div>
+                <div id="personsList" class="persons-grid"></div>
+            </div>
+
+            <!-- Appliances Tab -->
+            <div id="appliances" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-plug"></i> Gestion des appareils</h2>
+                    <div class="header-actions">
+                        <button class="btn-glow" onclick="showApplianceModal()"><i class="fas fa-plus-circle"></i> Ajouter un appareil</button>
+                        <button class="btn-outline" onclick="importDefaultAppliances()"><i class="fas fa-database"></i> Importer courants</button>
+                    </div>
+                </div>
+                <div id="appliancesList" class="appliances-grid"></div>
+            </div>
+
+            <!-- Billing Tab -->
+            <div id="billing" class="tab-content">
+                <div class="billing-hero">
+                    <div class="total-card"><div class="total-icon"><i class="fas fa-coins"></i></div><div class="total-details"><h3>Total des charges</h3><p id="totalCharges">0 Ar</p><span class="period-badge" id="currentPeriod">Janvier 2024</span></div></div>
+                    <div class="bill-actions">
+                        <button class="btn-outline" onclick="shareBill()"><i class="fas fa-share-alt"></i> Partager</button>
+                        <button class="btn-outline" onclick="showBalanceModal()"><i class="fas fa-wallet"></i> Comptes virtuels</button>
+                    </div>
+                </div>
+                <div id="billingDetails" class="billing-table-container"></div>
+            </div>
+
+          <!-- Settings Tab -->
+<div id="settings" class="tab-content">
+    <div class="settings-accordion">
+        
+        <!-- 1. JCM Calculate -->
+        <div class="settings-accordion-item">
+            <div class="settings-accordion-header">
+                <i class="fas fa-calculator"></i>
+                <span>JCM Calculate</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="settings-accordion-content">
+                <div class="settings-grid-accordion jcm-grid">
+                    <!-- Facture Électricité JIRAMA -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt"></i> Facture Électricité JIRAMA</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Montant total électricité (Ar)</label>
+                            <input type="number" id="elecBillAmount" step="100" value="0" class="premium-input">
+                            <small>Entrez le montant total de votre facture JIRAMA</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Consommation électrique totale (kWh)</label>
+                            <input type="number" id="elecConsumption" step="1" value="0" class="premium-input">
+                            <small>Consommation indiquée sur votre facture</small>
+                        </div>
+                        <div class="form-group calculation-result">
+                            <label><i class="fas fa-calculator"></i> Prix moyen du kWh</label>
+                            <div class="result-display" id="actualPricePerKwh">0 Ar/kWh</div>
+                            <small>Calculé automatiquement (si facture saisie)</small>
+                        </div>
+                    </div>
+
+                    <!-- Facture Eau JIRAMA -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tint"></i> Facture Eau JIRAMA</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Montant total eau (Ar)</label>
+                            <input type="number" id="waterBillAmount" step="100" value="0" class="premium-input">
+                            <small>Entrez le montant total de votre facture JIRAMA</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Consommation d'eau totale (m³)</label>
+                            <input type="number" id="waterConsumption" step="1" value="0" class="premium-input">
+                            <small>Consommation indiquée sur votre facture</small>
+                        </div>
+                        <div class="form-group calculation-result">
+                            <label><i class="fas fa-calculator"></i> Prix moyen du m³</label>
+                            <div class="result-display" id="actualPricePerM3">0 Ar/m³</div>
+                            <small>Calculé automatiquement (si facture saisie)</small>
+                        </div>
+                    </div>
+
+                    <!-- Méthode de répartition -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-calculator"></i> Méthode de répartition</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Méthode électricité</label>
+                            <select id="elecMethod" class="premium-select">
+                                <option value="basedOnBill">Basé sur la facture totale</option>
+                                <option value="basedOnAppliances">Basé sur les appareils</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Méthode eau</label>
+                            <select id="waterMethod" class="premium-select">
+                                <option value="equitable">Division équitable</option>
+                                <option value="basedOnConsumption">Basé sur consommation individuelle</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tarifs Électricité par tranches -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-charging-station"></i> Tarifs Électricité par tranches</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Activer les tranches personnalisées</label>
+                            <select id="elecTranchesEnabled" class="premium-select">
+                                <option value="false">Non - Utiliser le prix moyen de la facture</option>
+                                <option value="true">Oui - Définir mes propres tranches</option>
+                            </select>
+                            <small>Si activé, le prix moyen de la facture ne sera pas utilisé</small>
+                        </div>
+                        <div id="elecTranchesContainer">
+                            <div class="tranche-item" id="elecTrancheTemplate" style="display: none;">
+                                <div class="form-group tranche-group">
+                                    <div class="tranche-header">
+                                        <span class="tranche-title">Tranche <span class="tranche-number">1</span></span>
+                                        <button type="button" class="btn-icon delete tranche-delete" onclick="removeElecTranche(this)"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                    <div class="tranche-inputs">
+                                        <div class="tranche-range">
+                                            <label>De (kWh)</label>
+                                            <input type="number" class="premium-input tranche-min" step="1" value="0" placeholder="Min">
+                                        </div>
+                                        <div class="tranche-range">
+                                            <label>À (kWh)</label>
+                                            <input type="number" class="premium-input tranche-max" step="1" value="50" placeholder="Max">
+                                        </div>
+                                        <div class="tranche-range">
+                                            <label>Prix (Ar/kWh)</label>
+                                            <input type="number" class="premium-input tranche-price" step="10" value="450" placeholder="Prix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="elecTranchesList"></div>
+                            <button type="button" class="btn-outline" onclick="addElecTranche()" style="margin-top: 10px; width: 100%;">
+                                <i class="fas fa-plus"></i> Ajouter une tranche électricité
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tarifs Eau par tranches -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tint"></i> Tarifs Eau par tranches</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Activer les tranches personnalisées</label>
+                            <select id="waterTranchesEnabled" class="premium-select">
+                                <option value="false">Non - Utiliser le prix moyen de la facture</option>
+                                <option value="true">Oui - Définir mes propres tranches</option>
+                            </select>
+                            <small>Si activé, le prix moyen de la facture ne sera pas utilisé</small>
+                        </div>
+                        <div id="waterTranchesContainer">
+                            <div class="tranche-item" id="waterTrancheTemplate" style="display: none;">
+                                <div class="form-group tranche-group">
+                                    <div class="tranche-header">
+                                        <span class="tranche-title">Tranche <span class="tranche-number">1</span></span>
+                                        <button type="button" class="btn-icon delete tranche-delete" onclick="removeWaterTranche(this)"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                    <div class="tranche-inputs">
+                                        <div class="tranche-range">
+                                            <label>De (m³)</label>
+                                            <input type="number" class="premium-input tranche-min" step="1" value="0" placeholder="Min">
+                                        </div>
+                                        <div class="tranche-range">
+                                            <label>À (m³)</label>
+                                            <input type="number" class="premium-input tranche-max" step="1" value="10" placeholder="Max">
+                                        </div>
+                                        <div class="tranche-range">
+                                            <label>Prix (Ar/m³)</label>
+                                            <input type="number" class="premium-input tranche-price" step="100" value="2000" placeholder="Prix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="waterTranchesList"></div>
+                            <button type="button" class="btn-outline" onclick="addWaterTranche()" style="margin-top: 10px; width: 100%;">
+                                <i class="fas fa-plus"></i> Ajouter une tranche eau
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="settings-card action-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-save"></i> Actions</h3>
+                        </div>
+                        <div class="settings-actions" style="margin-top: 10px;">
+                            <button class="btn-glow" onclick="saveSettings()" style="flex: 1;">
+                                <i class="fas fa-save"></i> Sauvegarder
+                            </button>
+                            <button class="btn-outline" onclick="resetData()" style="flex: 1;">
+                                <i class="fas fa-trash-alt"></i> Réinitialiser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Email Notifications -->
+        <div class="settings-accordion-item">
+            <div class="settings-accordion-header">
+                <i class="fas fa-envelope"></i>
+                <span>Email Notifications</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="settings-accordion-content">
+                <div class="settings-single-card">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-envelope"></i> Notifications par email</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Activer les notifications</label>
+                            <select id="emailNotifications" class="premium-select">
+                                <option value="false">Désactivé</option>
+                                <option value="true">Activé</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Emails des colocataires</label>
+                            <div id="emailList"></div>
+                            <small>Les emails sont déjà renseignés dans les profils</small>
+                        </div>
+                        <button class="btn-outline" onclick="sendEmailTest()" style="width: 100%;">
+                            <i class="fas fa-paper-plane"></i> Tester l'envoi
+                        </button>
+                        <button class="btn-glow" onclick="sendInvoiceByEmail()" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-envelope"></i> Envoyer les factures
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Payment Reminders -->
+        <div class="settings-accordion-item">
+            <div class="settings-accordion-header">
+                <i class="fas fa-bell"></i>
+                <span>Payment Reminders</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="settings-accordion-content">
+                <div class="settings-single-card">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bell"></i> Rappels de paiement</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Activer les rappels</label>
+                            <select id="paymentReminders" class="premium-select">
+                                <option value="false">Désactivé</option>
+                                <option value="true">Activé</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Jours avant échéance</label>
+                            <select id="reminderDays" class="premium-select">
+                                <option value="3">3 jours avant</option>
+                                <option value="5">5 jours avant</option>
+                                <option value="7">7 jours avant</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="acc-info-note">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Les rappels seront envoyés par email aux colocataires ayant un email renseigné.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Cloud Backup -->
+        <div class="settings-accordion-item">
+            <div class="settings-accordion-header">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Cloud Backup</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="settings-accordion-content">
+                <div class="settings-single-card">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> Sauvegarde Cloud Personnalisée</h3>
+                        </div>
+                        
+                        <div id="cloudUserInfo" style="margin-bottom: 15px;">
+                            <button class="btn-glow" onclick="cloudStorage?.signIn()" style="width: 100%;">
+                                <i class="fab fa-google"></i> Se connecter avec Google
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Synchronisation automatique</label>
+                            <select id="autoSync" class="premium-select">
+                                <option value="false">Désactivée</option>
+                                <option value="true">Activée (toutes les heures)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Dernière synchronisation</label>
+                            <p id="lastSync" style="color: rgba(255,255,255,0.6);">Jamais</p>
+                        </div>
+                        
+                        <div class="settings-actions" style="margin-top: 15px;">
+                            <button class="btn-glow" id="cloudSaveBtn" onclick="saveToCloud()" style="flex: 1;" disabled>
+                                <i class="fas fa-cloud-upload-alt"></i> Sauvegarder
+                            </button>
+                            <button class="btn-outline" id="cloudRestoreBtn" onclick="restoreFromCloud()" style="flex: 1;" disabled>
+                                <i class="fas fa-cloud-download-alt"></i> Restaurer
+                            </button>
+                        </div>
+                    </div>
+                    <div class="acc-info-note">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Les données sont sauvegardées dans votre espace Google Drive personnel.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Account Management -->
+<div class="settings-accordion-item">
+    <div class="settings-accordion-header">
+        <i class="fas fa-users-cog"></i>
+        <span>Account Management</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+    <div class="settings-accordion-content">
+        <div class="settings-single-card">
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users-cog"></i> Gestion des comptes</h3>
+                </div>
+                <div class="form-group">
+                    <label>Liste des utilisateurs</label>
+                    <div id="usersListPreview" class="users-list-container"></div>
+                </div>
+                <button class="btn-glow" onclick="showUsersManagement()" style="width: 100%; margin-top: 5px;">
+                    <i class="fas fa-user-plus"></i> Gérer les comptes
+                </button>
+            </div>
+            <div class="acc-info-note">
+                <i class="fas fa-info-circle"></i>
+                <span>Chaque colocataire peut avoir son propre compte. Mot de passe par défaut&nbsp;: <strong>jirama123</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+            <!-- History Tab -->
+            <div id="history" class="tab-content">
+<div class="section-header" style="flex-direction:row;align-items:center;justify-content:space-between">
+    <h2><i class="fas fa-history"></i> Historique des factures</h2>
+    <button class="btn-outline" onclick="clearHistory()"><i class="fas fa-trash"></i> Effacer l'historique</button>
+</div>
+            </div>
+        </main>
+
+        <footer class="premium-footer">
+            <div class="footer-content">
+                <div class="footer-section footer-brand" style="align-items:flex-start;text-align:left"><div class="footer-logo"><svg class="jirama-logo-small" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" width="30" height="30"><circle cx="25" cy="25" r="22" fill="white" stroke="#00d4ff" stroke-width="1.5"/><path d="M25 10 L25 40 M17.5 17.5 L32.5 17.5 M17.5 32.5 L32.5 32.5" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/><path d="M15 25 L35 25" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="25" r="4" fill="#00d4ff"/></svg><h3>JIRAMA Charge Manager</h3></div><p>Solution intelligente pour la gestion des charges d'électricité et d'eau à Madagascar.</p>
+    </div>   
+    <div class="footer-section footer-socials">
+        <div class="social-links">
+            <a href="https://www.facebook.com/jiramaofisialy" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com/jirama_mg" target="_blank" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/jirama_madagascar" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/jiramaofisialy/" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://github.com/jirama" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
+        </div>
+    </div>
+              
+<div class="jcm-footer-nav">
+    <div class="jcm-tabs">
+        <button class="jcm-tab active" onclick="switchJCM(this,'jcm-nav')">
+            <i class="fas fa-compass"></i><span>Nav</span>
+        </button>
+        <button class="jcm-tab" onclick="switchJCM(this,'jcm-res')">
+            <i class="fas fa-book-open"></i><span>Aide</span>
+        </button>
+        <button class="jcm-tab" onclick="switchJCM(this,'jcm-con')">
+            <i class="fas fa-envelope"></i><span>Contact</span>
+        </button>
+    </div>
+    <div class="jcm-panels">
+        <div class="jcm-panel active" id="jcm-nav">
+            <div class="jcm-panel-header">
+                <i class="fas fa-compass"></i>
+                <h4>Navigation</h4>
+                <span class="jcm-badge">5 pages</span>
+            </div>
+            <ul class="jcm-list">
+                <li onclick="switchTab('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span><span class="jcm-arrow">›</span></li>
+                <li onclick="switchTab('persons')"><i class="fas fa-users"></i><span>Colocataires</span><span class="jcm-arrow">›</span></li>
+                <li onclick="switchTab('appliances')"><i class="fas fa-plug"></i><span>Appareils</span><span class="jcm-arrow">›</span></li>
+                <li onclick="switchTab('billing')"><i class="fas fa-file-invoice"></i><span>Facturation</span><span class="jcm-arrow">›</span></li>
+                <li onclick="switchTab('settings')"><i class="fas fa-cog"></i><span>Paramètres</span><span class="jcm-arrow">›</span></li>
+            </ul>
+        </div>
+        <div class="jcm-panel" id="jcm-res">
+            <div class="jcm-panel-header">
+                <i class="fas fa-book-open"></i>
+                <h4>Ressources</h4>
+                <span class="jcm-badge">7 liens</span>
+            </div>
+            <ul class="jcm-list">
+                <li onclick="showGuide()"><i class="fas fa-question-circle"></i><span>Guide d'utilisation</span><span class="jcm-arrow">›</span></li>
+                <li onclick="showDocumentation()"><i class="fas fa-file-alt"></i><span>Documentation technique</span><span class="jcm-arrow">›</span></li>
+                <li onclick="showSupport()"><i class="fas fa-life-ring"></i><span>Support technique</span><span class="jcm-arrow">›</span></li>
+                <li onclick="reportBug()"><i class="fas fa-bug"></i><span>Signaler un bug</span><span class="jcm-arrow">›</span></li>
+                <li onclick="suggestFeature()"><i class="fas fa-star"></i><span>Proposer une amélioration</span><span class="jcm-arrow">›</span></li>
+                <li onclick="showFAQ()"><i class="fas fa-question"></i><span>FAQ</span><span class="jcm-arrow">›</span></li>
+                <li onclick="showTarifs()"><i class="fas fa-charging-station"></i><span>Tarifs JIRAMA</span><span class="jcm-arrow">›</span></li>
+            </ul>
+        </div>
+        <div class="jcm-panel" id="jcm-con">
+            <div class="jcm-panel-header">
+                <i class="fas fa-envelope"></i>
+                <h4>Contact officiel</h4>
+            </div>
+            <div class="jcm-contact-row"><i class="fas fa-map-marker-alt"></i><span>JIRAMA — Antananarivo, Madagascar</span></div>
+            <div class="jcm-contact-row"><i class="fas fa-phone"></i><span>+261 34 30 000 30</span></div>
+            <div class="jcm-contact-row"><i class="fas fa-envelope"></i><span>contact@jirama.mg</span></div>
+            <div class="jcm-contact-row"><i class="fas fa-clock"></i><span>Lun-Ven : 8h-17h &nbsp;|&nbsp; Sam : 8h-12h</span></div>
+            <div class="jcm-contact-row"><i class="fas fa-globe"></i><span>www.jirama.mg</span></div>
+            <div class="app-badges" style="margin-top:12px">
+                <span class="badge" onclick="showMobileApp()"><i class="fab fa-android"></i> Android</span>
+                <span class="badge" onclick="showMobileApp()"><i class="fab fa-apple"></i> iOS</span>
+                <span class="badge" onclick="showWebApp()"><i class="fas fa-globe"></i> Web</span>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+            <div class="footer-bottom"><p>&copy; 2026 JIRAMA Charge Manager - Version 3.0 | Made with <i class="fas fa-heart"></i> pour Madagascar</p><div class="footer-links"><a href="#" onclick="showLegal()">Mentions légales</a><a href="#" onclick="showPrivacy()">Confidentialité</a><a href="#" onclick="showTerms()">CGU</a><a href="#" onclick="showCookies()">Cookies</a><a href="#" onclick="showAccessibility()">Accessibilité</a></div></div>
+        </footer>
+    </div>
+
+   <!-- Login Modal redesigné -->
+<div id="loginModal" class="modal login-modal-overlay">
+    <div class="login-modal-card">
+        <div class="login-modal-hero">
+            <div class="login-logo-ring">
+                <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+                    <circle cx="30" cy="30" r="28" fill="white" stroke="#00d4ff" stroke-width="2"/>
+                    <path d="M30 12 L30 48 M20 21 L40 21 M20 39 L40 39" stroke="#00d4ff" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M16 30 L44 30" stroke="#00d4ff" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="30" cy="30" r="5" fill="#00d4ff"/>
+                </svg>
+            </div>
+            <h2 class="login-modal-title">JIRAMA Charge Manager</h2>
+            <p class="login-modal-sub">Gérez vos charges en toute simplicité</p>
+        </div>
+
+        <div class="login-tabs">
+            <button class="login-tab active" id="tabLogin" onclick="switchLoginTab('login')">
+                <i class="fas fa-sign-in-alt"></i> Connexion
+            </button>
+            <button class="login-tab" id="tabGuest" onclick="switchLoginTab('guest')">
+                <i class="fas fa-user-secret"></i> Mode Invité
+            </button>
+        </div>
+
+        <div class="login-panel" id="panelLogin">
+            <div class="login-form-group">
+                <label><i class="fas fa-user"></i> Nom d'utilisateur ou email</label>
+                <input type="text" id="loginUsername" class="login-input" placeholder="admin" autocomplete="username">
+            </div>
+            <div class="login-form-group">
+                <label><i class="fas fa-lock"></i> Mot de passe</label>
+                <div class="login-pass-wrap">
+                    <input type="password" id="loginPassword" class="login-input" placeholder="••••••" autocomplete="current-password">
+                    <button type="button" class="login-eye" onclick="toggleLoginPass()"><i class="fas fa-eye" id="eyeIcon"></i></button>
+                </div>
+            </div>
+            <div id="loginError" class="login-error" style="display:none">
+                <i class="fas fa-exclamation-circle"></i> <span id="loginErrorMsg">Identifiants incorrects</span>
+            </div>
+            <button id="submitLogin" class="login-btn-primary" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> Se connecter
+            </button>
+            <div class="login-demo-accounts">
+                <span class="login-demo-label">Comptes de démonstration</span>
+                <div class="login-demo-list">
+                    <button class="login-demo-chip" onclick="fillDemo('admin','admin123')">
+                        <i class="fas fa-shield-alt"></i> admin
+                    </button>
+                    <button class="login-demo-chip" onclick="fillDemo('rakoto','rakoto123')">
+                        <i class="fas fa-user"></i> rakoto
+                    </button>
+                    <button class="login-demo-chip" onclick="fillDemo('raso','raso123')">
+                        <i class="fas fa-user"></i> raso
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-panel" id="panelGuest" style="display:none">
+            <div class="login-guest-info">
+                <div class="login-guest-icon"><i class="fas fa-user-secret"></i></div>
+                <h4>Mode Invité</h4>
+                <p>Explorez l'application sans compte. Vos données seront stockées localement mais non synchronisées.</p>
+                <ul class="login-guest-features">
+                    <li><i class="fas fa-check"></i> Accès au dashboard et aux calculs</li>
+                    <li><i class="fas fa-check"></i> Ajout de colocataires et appareils</li>
+                    <li><i class="fas fa-check"></i> Génération de factures PDF</li>
+                    <li><i class="fas fa-times" style="color:#ff6b6b"></i> Synchronisation cloud désactivée</li>
+                    <li><i class="fas fa-times" style="color:#ff6b6b"></i> Envoi d'emails désactivé</li>
+                </ul>
+            </div>
+            <button class="login-btn-guest" onclick="loginAsGuest()">
+                <i class="fas fa-play"></i> Continuer en invité
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- Person Modal -->
+    <div id="personModal" class="modal">
+        <div class="modal-content person-modal">
+            <div class="modal-header"><h3 id="personModalTitle"><i class="fas fa-user-plus"></i> Ajouter un colocataire</h3><span class="close" onclick="closePersonModal()">&times;</span></div>
+            <form id="personForm"><input type="hidden" id="personId"><div class="form-group"><label><i class="fas fa-user"></i> Nom complet</label><input type="text" id="personName" required placeholder="Ex: Rakoto Jean" class="premium-input"><small>Le nom sera affiché dans les factures</small></div><div class="form-group"><label><i class="fas fa-envelope"></i> Adresse email</label><input type="email" id="personEmail" placeholder="exemple@email.com" class="premium-input"><small>Pour recevoir les factures par email</small></div><div class="form-group"><label><i class="fas fa-phone"></i> Numéro de téléphone</label><input type="tel" id="personPhone" placeholder="+261 XX XXX XXXX" class="premium-input"><small>Format recommandé: +261 32 12 345 67</small></div><div class="form-group"><label><i class="fas fa-chart-line"></i> Coefficient de présence</label><div class="slider-container"><input type="range" id="personCoefficientSlider" min="0" max="1" step="0.1" value="1"><span id="coefficientValue">100%</span></div><small>0% = absent tout le mois, 100% = présent tout le mois</small></div><div class="form-actions"><button type="button" class="btn-outline" onclick="closePersonModal()"><i class="fas fa-times"></i> Annuler</button><button type="submit" class="btn-glow"><i class="fas fa-save"></i> Enregistrer</button></div></form>
+        </div>
+    </div>
+
+    <!-- Appliance Modal -->
+    <div id="applianceModal" class="modal">
+        <div class="modal-content appliance-modal">
+            <div class="modal-header"><h3 id="applianceModalTitle"><i class="fas fa-plug"></i> Ajouter un appareil</h3><span class="close" onclick="closeApplianceModal()">&times;</span></div>
+            <form id="applianceForm"><input type="hidden" id="applianceId"><div class="form-group"><label><i class="fas fa-tag"></i> Nom de l'appareil</label><input type="text" id="applianceName" required placeholder="Ex: Réfrigérateur, TV, Ordinateur..." class="premium-input"><small>Choisissez un nom reconnaissable</small></div><div class="form-row"><div class="form-group"><label><i class="fas fa-bolt"></i> Puissance (Watts)</label><input type="number" id="appliancePower" required placeholder="Ex: 150" class="premium-input"><small>Indiquée sur l'étiquette de l'appareil</small></div><div class="form-group"><label><i class="fas fa-chart-line"></i> Catégorie</label><select id="applianceCategory" class="premium-select"><option value="chauffage">🔥 Chauffage</option><option value="cuisson">🍳 Cuisson</option><option value="multimedia">📺 Multimédia</option><option value="electromenager">🧺 Électroménager</option><option value="eclairage">💡 Éclairage</option><option value="autre">🔌 Autre</option></select></div></div><div class="form-row"><div class="form-group"><label><i class="fas fa-clock"></i> Heures d'utilisation/jour</label><input type="number" id="applianceHours" step="0.5" required placeholder="Ex: 4" class="premium-input"><small>Estimation de l'utilisation quotidienne</small></div><div class="form-group"><label><i class="fas fa-calendar"></i> Jours d'utilisation/mois</label><input type="number" id="applianceDays" required placeholder="Ex: 22" class="premium-input"><small>Nombre de jours par mois</small></div></div><div class="form-group"><label><i class="fas fa-users"></i> Type de partage</label><select id="applianceType" class="premium-select"><option value="individual">👤 Individuel (facturé à une seule personne)</option><option value="shared">👥 Partagé (réparti entre tous)</option></select><small>Les appareils partagés sont divisés équitablement</small></div><div class="form-group" id="personSelectGroup"><label><i class="fas fa-user-check"></i> Assigné à</label><select id="appliancePersonId" class="premium-select"></select><small>La personne qui utilise principalement cet appareil</small></div><div class="consumption-preview"><div class="preview-icon"><i class="fas fa-charging-station"></i></div><div class="preview-text"><span>Consommation estimée</span><strong id="consumptionPreview">0 kWh/mois</strong></div></div><div class="form-actions"><button type="button" class="btn-outline" onclick="closeApplianceModal()"><i class="fas fa-times"></i> Annuler</button><button type="submit" class="btn-glow"><i class="fas fa-save"></i> Enregistrer</button></div></form>
+        </div>
+    </div>
+
+    <div id="budgetModal" class="modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-chart-line"></i> Simulateur de budget</h3><span class="close" onclick="closeBudgetModal()">&times;</span></div><div id="budgetSimulator"></div></div></div>
+
+    <!-- Guide Modal -->
+    <div id="guideModal" class="modal">
+    <div class="modal-content guide-modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-book-open"></i> Guide d'utilisation</h3>
+            <span class="close" onclick="closeGuideModal()">&times;</span>
+        </div>
+        <div class="modal-body guide-body">
+            <p class="guide-intro">Suivez ces étapes pour bien démarrer avec JIRAMA Charge Manager.</p>
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-users"></i> Ajouter des colocataires</h4>
+                        <p>Allez dans l'onglet <strong>Colocataires</strong> et cliquez sur <em>Ajouter un colocataire</em>. Renseignez son nom, email, téléphone et son coefficient de présence (1 = présent tout le mois).</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-plug"></i> Ajouter des appareils électriques</h4>
+                        <p>Dans l'onglet <strong>Appareils</strong>, ajoutez chaque appareil avec sa puissance (W), ses heures d'utilisation par jour et le nombre de jours par mois. Indiquez s'il est individuel ou partagé.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-file-invoice"></i> Saisir les factures JIRAMA</h4>
+                        <p>Dans <strong>Paramètres → JCM Calculate</strong>, entrez le montant total de vos factures d'électricité et d'eau ainsi que les consommations. Le prix moyen par kWh et par m³ sera calculé automatiquement.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-chart-bar"></i> Visualiser la facturation</h4>
+                        <p>L'onglet <strong>Facturation</strong> calcule automatiquement la répartition des charges entre tous les colocataires selon leur coefficient de présence et leurs appareils.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-file-pdf"></i> Générer une facture PDF</h4>
+                        <p>Dans l'onglet <strong>Facturation</strong>, cliquez sur <em>Générer PDF</em> pour obtenir une facture professionnelle téléchargeable. Vous pouvez aussi partager via WhatsApp ou copier dans le presse-papier.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-history"></i> Suivre l'historique</h4>
+                        <p>L'onglet <strong>Historique</strong> conserve toutes les factures générées et les paiements enregistrés. Marquez les paiements comme reçus directement dans l'onglet Facturation.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-cloud-upload-alt"></i> Sauvegarder vos données</h4>
+                        <p>Utilisez <strong>Paramètres → Cloud Backup</strong> pour connecter votre Google Drive et sauvegarder automatiquement. Vous pouvez aussi exporter en JSON ou Excel depuis le Dashboard.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">8</div>
+                    <div class="step-content">
+                        <h4><i class="fas fa-camera"></i> Scanner une facture</h4>
+                        <p>Cliquez sur <em>Scanner facture</em> dans le Dashboard pour importer automatiquement les montants depuis une photo de votre facture JIRAMA.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="guide-tips-section">
+                <h4 class="guide-tips-title"><i class="fas fa-lightbulb"></i> Astuces</h4>
+                <div class="guide-tip"><i class="fas fa-check-circle"></i><span>Le <strong>coefficient de présence</strong> permet d'ajuster la part de chaque colocataire absent pendant une partie du mois (ex: 0.5 = 15 jours présent).</span></div>
+                <div class="guide-tip"><i class="fas fa-check-circle"></i><span>Les <strong>appareils partagés</strong> (frigo, TV) sont automatiquement répartis entre tous selon leur coefficient.</span></div>
+                <div class="guide-tip"><i class="fas fa-check-circle"></i><span>Activez les <strong>tranches tarifaires personnalisées</strong> pour utiliser les tarifs exacts de votre contrat JIRAMA.</span></div>
+                <div class="guide-tip"><i class="fas fa-check-circle"></i><span>Le <strong>mode invité</strong> permet d'explorer l'application sans créer de compte.</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Support Modal -->
+    <div id="supportModal" class="modal"><div class="modal-content support-modal"><div class="modal-header"><h3><i class="fas fa-headset"></i> Support technique JIRAMA</h3><span class="close" onclick="closeSupportModal()">&times;</span></div><div class="modal-body support-body"><div class="support-hero"><div class="support-icon"><i class="fas fa-phone-alt"></i></div><div class="support-info"><h4>Besoin d'aide ?</h4><p>Notre équipe est à votre disposition pour vous assister</p></div></div><div class="support-cards"><div class="support-card"><div class="card-icon"><i class="fas fa-phone-volume"></i></div><div class="card-content"><h4>Hotline JIRAMA</h4><p class="phone-number">134</p><p class="small">Gratuit - Urgence 24h/24</p></div></div><div class="support-card"><div class="card-icon"><i class="fas fa-envelope"></i></div><div class="card-content"><h4>Support par email</h4><p class="email">contact@jirama.mg</p><p class="small">Réponse sous 24h</p></div></div><div class="support-card"><div class="card-icon"><i class="fas fa-clock"></i></div><div class="card-content"><h4>Horaires d'ouverture</h4><p>Lundi - Vendredi</p><p class="hours">8h00 - 17h00</p></div></div></div><div class="agencies-section"><h4><i class="fas fa-building"></i> Agences JIRAMA</h4><div class="agencies-grid"><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Antananarivo</strong><span>34, Rue Ravoninahitriniarivo</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Toamasina</strong><span>Boulevard de la Réunion</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Mahajanga</strong><span>Avenue de France</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Antsiranana</strong><span>Rue Colbert</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Fianarantsoa</strong><span>Avenue de l'Indépendance</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Toliara</strong><span>Boulevard Gallieni</span></div></div></div></div><div class="emergency-box"><div class="emergency-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="emergency-content"><strong>URGENCE 24h/24</strong><p>Pour toute panne d'électricité ou d'eau, contactez le service d'urgence :</p><div class="emergency-number"><i class="fas fa-phone"></i> <span>134</span> (appel gratuit)</div></div></div><div class="quick-contact"><h4><i class="fas fa-paper-plane"></i> Nous écrire rapidement</h4><form id="quickSupportForm" onsubmit="sendQuickMessage(event)"><div class="form-row"><input type="text" placeholder="Votre nom" class="premium-input" required><input type="email" placeholder="Votre email" class="premium-input" required></div><textarea placeholder="Votre message..." rows="3" class="premium-input" required></textarea><button type="submit" class="btn-glow"><i class="fas fa-paper-plane"></i> Envoyer</button></form><p class="form-note"><i class="fas fa-lock"></i> Vos données sont confidentielles</p></div></div></div></div>
+
+    <!-- Tarifs Modal -->
+    <div id="tarifsModal" class="modal"><div class="modal-content tarifs-modal"><div class="modal-header"><h3><i class="fas fa-charging-station"></i> Tarifs JIRAMA</h3><span class="close" onclick="closeTarifsModal()">&times;</span></div><div class="modal-body tarifs-body"><div class="tarifs-container"><div class="tarif-card elec-card"><div class="tarif-header"><i class="fas fa-bolt"></i><h4>Électricité</h4></div><div class="tarif-content"><div class="tarif-range"><span class="range-label">0 - 50 kWh</span><span class="range-price">450 Ar/kWh</span></div><div class="tarif-range"><span class="range-label">51 - 150 kWh</span><span class="range-price">550 Ar/kWh</span></div><div class="tarif-range"><span class="range-label">151 - 300 kWh</span><span class="range-price">650 Ar/kWh</span></div><div class="tarif-range"><span class="range-label">301+ kWh</span><span class="range-price">750 Ar/kWh</span></div></div></div><div class="tarif-card water-card"><div class="tarif-header"><i class="fas fa-tint"></i><h4>Eau</h4></div><div class="tarif-content"><div class="tarif-range"><span class="range-label">0 - 10 m³</span><span class="range-price">2 000 Ar/m³</span></div><div class="tarif-range"><span class="range-label">11 - 25 m³</span><span class="range-price">2 500 Ar/m³</span></div><div class="tarif-range"><span class="range-label">26 - 50 m³</span><span class="range-price">3 000 Ar/m³</span></div><div class="tarif-range"><span class="range-label">51+ m³</span><span class="range-price">3 500 Ar/m³</span></div></div></div></div><div class="tarif-note"><i class="fas fa-info-circle"></i><p>Les tarifs sont donnés à titre indicatif et peuvent varier selon les zones. Consultez votre facture JIRAMA pour les tarifs exacts.</p></div></div></div></div>
+
+    <div id="faqModal" class="modal">
+    <div class="modal-content faq-modal">
+        <div class="modal-header">
+            <h3><i class="fas fa-question-circle"></i> Foire aux questions</h3>
+            <span class="close" onclick="closeFAQModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Comment fonctionne le coefficient de présence ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Le coefficient permet d'ajuster la part des charges selon la présence réelle. Exemple : un colocataire présent 50% du mois aura un coefficient de 0.5. Cela permet de ne pas payer pour les périodes d'absence.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Différence entre appareil individuel et partagé ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Appareil individuel :</strong> Facturé uniquement à la personne qui l'utilise (ex: ordinateur personnel).<br>
+                        <strong>Appareil partagé :</strong> Réparti équitablement entre tous les colocataires selon leur coefficient de présence (ex: réfrigérateur, télévision).</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Comment importer mes factures JIRAMA ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Rendez-vous dans l'onglet "Paramètres" et saisissez manuellement le montant de vos factures d'électricité et d'eau. L'application calculera automatiquement la répartition entre les colocataires.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Puis-je exporter mes données ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui ! Utilisez le bouton "Exporter" dans le Dashboard pour sauvegarder toutes vos données au format JSON. Vous pourrez les réimporter plus tard avec le bouton "Importer".</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Comment générer une facture PDF ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Dans l'onglet "Facturation", cliquez sur "Générer PDF". Une facture professionnelle sera automatiquement téléchargée avec le détail des charges par personne.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Les données sont-elles sauvegardées ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui ! Toutes vos données sont automatiquement sauvegardées dans votre navigateur (localStorage). Vous pouvez aussi les exporter pour les conserver en sécurité.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <input type="file" id="importFile" accept=".json" style="display: none;">    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="database.js"></script>
+    <script src="cloud-storage.js"></script>
+    <script src="script.js"></script>
+<script>
+// Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+        .then(registration => console.log('✅ Service Worker enregistré'))
+        .catch(error => console.error('❌ Erreur SW:', error));
+}
+</script>
+</body>
+</html>
