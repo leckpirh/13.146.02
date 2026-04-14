@@ -320,7 +320,7 @@
                         </div>
                     </div>
 
-                    <!-- Méthode de répartition -->
+                                    <!-- Méthode de répartition -->
                     <div class="settings-card">
                         <div class="card-header">
                             <h3><i class="fas fa-calculator"></i> Méthode de répartition</h3>
@@ -330,6 +330,7 @@
                             <select id="elecMethod" class="premium-select">
                                 <option value="basedOnBill">Basé sur la facture totale</option>
                                 <option value="basedOnAppliances">Basé sur les appareils</option>
+                                <option value="basedOnBillAndAppliances">Facture totale + appareils individuels</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -949,18 +950,12 @@
 </div>
 
     <input type="file" id="importFile" accept=".json" style="display: none;">    
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="database.js"></script>
+    
+    <script src="database.js"></script>
     <script src="cloud-storage.js"></script>
+    <script src="worker.js"></script>
     <script src="script.js"></script>
-<script>
-// Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-        .then(registration => console.log('✅ Service Worker enregistré'))
-        .catch(error => console.error('❌ Erreur SW:', error));
-}
-</script>
 </body>
 </html>
