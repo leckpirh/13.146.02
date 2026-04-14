@@ -20,6 +20,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="JIRAMA CM">
+<style>
+/* Offline font fallback */
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+</style>
 </head>
 <body>
 
@@ -320,7 +324,7 @@
                         </div>
                     </div>
 
-                                    <!-- Méthode de répartition -->
+                    <!-- Méthode de répartition -->
                     <div class="settings-card">
                         <div class="card-header">
                             <h3><i class="fas fa-calculator"></i> Méthode de répartition</h3>
@@ -534,7 +538,7 @@
                         </div>
                         
                         <div id="cloudUserInfo" style="margin-bottom: 15px;">
-                            <button class="btn-glow" onclick="cloudStorage?.signIn()" style="width: 100%;">
+                            <button class="btn-glow" onclick="signInToDrive()" style="width: 100%;">
                                 <i class="fab fa-google"></i> Se connecter avec Google
                             </button>
                         </div>
@@ -673,7 +677,7 @@
             </div>
             <div class="jcm-contact-row"><i class="fas fa-map-marker-alt"></i><span>JIRAMA — Antananarivo, Madagascar</span></div>
             <div class="jcm-contact-row"><i class="fas fa-phone"></i><span>+261 34 30 000 30</span></div>
-            <div class="jcm-contact-row"><i class="fas fa-envelope"></i><span>contact@jirama.mg</span></div>
+            <div class="jcm-contact-row"><i class="fas fa-envelope"></i><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7f1c10110b1e1c0b3f15160d1e121e511218">[email&#160;protected]</a></span></div>
             <div class="jcm-contact-row"><i class="fas fa-clock"></i><span>Lun-Ven : 8h-17h &nbsp;|&nbsp; Sam : 8h-12h</span></div>
             <div class="jcm-contact-row"><i class="fas fa-globe"></i><span>www.jirama.mg</span></div>
             <div class="app-badges" style="margin-top:12px">
@@ -865,7 +869,7 @@
 </div>
 
     <!-- Support Modal -->
-    <div id="supportModal" class="modal"><div class="modal-content support-modal"><div class="modal-header"><h3><i class="fas fa-headset"></i> Support technique JIRAMA</h3><span class="close" onclick="closeSupportModal()">&times;</span></div><div class="modal-body support-body"><div class="support-hero"><div class="support-icon"><i class="fas fa-phone-alt"></i></div><div class="support-info"><h4>Besoin d'aide ?</h4><p>Notre équipe est à votre disposition pour vous assister</p></div></div><div class="support-cards"><div class="support-card"><div class="card-icon"><i class="fas fa-phone-volume"></i></div><div class="card-content"><h4>Hotline JIRAMA</h4><p class="phone-number">134</p><p class="small">Gratuit - Urgence 24h/24</p></div></div><div class="support-card"><div class="card-icon"><i class="fas fa-envelope"></i></div><div class="card-content"><h4>Support par email</h4><p class="email">contact@jirama.mg</p><p class="small">Réponse sous 24h</p></div></div><div class="support-card"><div class="card-icon"><i class="fas fa-clock"></i></div><div class="card-content"><h4>Horaires d'ouverture</h4><p>Lundi - Vendredi</p><p class="hours">8h00 - 17h00</p></div></div></div><div class="agencies-section"><h4><i class="fas fa-building"></i> Agences JIRAMA</h4><div class="agencies-grid"><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Antananarivo</strong><span>34, Rue Ravoninahitriniarivo</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Toamasina</strong><span>Boulevard de la Réunion</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Mahajanga</strong><span>Avenue de France</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Antsiranana</strong><span>Rue Colbert</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Fianarantsoa</strong><span>Avenue de l'Indépendance</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Toliara</strong><span>Boulevard Gallieni</span></div></div></div></div><div class="emergency-box"><div class="emergency-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="emergency-content"><strong>URGENCE 24h/24</strong><p>Pour toute panne d'électricité ou d'eau, contactez le service d'urgence :</p><div class="emergency-number"><i class="fas fa-phone"></i> <span>134</span> (appel gratuit)</div></div></div><div class="quick-contact"><h4><i class="fas fa-paper-plane"></i> Nous écrire rapidement</h4><form id="quickSupportForm" onsubmit="sendQuickMessage(event)"><div class="form-row"><input type="text" placeholder="Votre nom" class="premium-input" required><input type="email" placeholder="Votre email" class="premium-input" required></div><textarea placeholder="Votre message..." rows="3" class="premium-input" required></textarea><button type="submit" class="btn-glow"><i class="fas fa-paper-plane"></i> Envoyer</button></form><p class="form-note"><i class="fas fa-lock"></i> Vos données sont confidentielles</p></div></div></div></div>
+    <div id="supportModal" class="modal"><div class="modal-content support-modal"><div class="modal-header"><h3><i class="fas fa-headset"></i> Support technique JIRAMA</h3><span class="close" onclick="closeSupportModal()">&times;</span></div><div class="modal-body support-body"><div class="support-hero"><div class="support-icon"><i class="fas fa-phone-alt"></i></div><div class="support-info"><h4>Besoin d'aide ?</h4><p>Notre équipe est à votre disposition pour vous assister</p></div></div><div class="support-cards"><div class="support-card"><div class="card-icon"><i class="fas fa-phone-volume"></i></div><div class="card-content"><h4>Hotline JIRAMA</h4><p class="phone-number">134</p><p class="small">Gratuit - Urgence 24h/24</p></div></div><div class="support-card"><div class="card-icon"><i class="fas fa-envelope"></i></div><div class="card-content"><h4>Support par email</h4><p class="email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="accfc3c2d8cdcfd8ecc6c5decdc1cd82c1cb">[email&#160;protected]</a></p><p class="small">Réponse sous 24h</p></div></div><div class="support-card"><div class="card-icon"><i class="fas fa-clock"></i></div><div class="card-content"><h4>Horaires d'ouverture</h4><p>Lundi - Vendredi</p><p class="hours">8h00 - 17h00</p></div></div></div><div class="agencies-section"><h4><i class="fas fa-building"></i> Agences JIRAMA</h4><div class="agencies-grid"><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Antananarivo</strong><span>34, Rue Ravoninahitriniarivo</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Toamasina</strong><span>Boulevard de la Réunion</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Mahajanga</strong><span>Avenue de France</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Antsiranana</strong><span>Rue Colbert</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Fianarantsoa</strong><span>Avenue de l'Indépendance</span></div></div><div class="agency-card"><i class="fas fa-map-marker-alt"></i><div><strong>Toliara</strong><span>Boulevard Gallieni</span></div></div></div></div><div class="emergency-box"><div class="emergency-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="emergency-content"><strong>URGENCE 24h/24</strong><p>Pour toute panne d'électricité ou d'eau, contactez le service d'urgence :</p><div class="emergency-number"><i class="fas fa-phone"></i> <span>134</span> (appel gratuit)</div></div></div><div class="quick-contact"><h4><i class="fas fa-paper-plane"></i> Nous écrire rapidement</h4><form id="quickSupportForm" onsubmit="sendQuickMessage(event)"><div class="form-row"><input type="text" placeholder="Votre nom" class="premium-input" required><input type="email" placeholder="Votre email" class="premium-input" required></div><textarea placeholder="Votre message..." rows="3" class="premium-input" required></textarea><button type="submit" class="btn-glow"><i class="fas fa-paper-plane"></i> Envoyer</button></form><p class="form-note"><i class="fas fa-lock"></i> Vos données sont confidentielles</p></div></div></div></div>
 
     <!-- Tarifs Modal -->
     <div id="tarifsModal" class="modal"><div class="modal-content tarifs-modal"><div class="modal-header"><h3><i class="fas fa-charging-station"></i> Tarifs JIRAMA</h3><span class="close" onclick="closeTarifsModal()">&times;</span></div><div class="modal-body tarifs-body"><div class="tarifs-container"><div class="tarif-card elec-card"><div class="tarif-header"><i class="fas fa-bolt"></i><h4>Électricité</h4></div><div class="tarif-content"><div class="tarif-range"><span class="range-label">0 - 50 kWh</span><span class="range-price">450 Ar/kWh</span></div><div class="tarif-range"><span class="range-label">51 - 150 kWh</span><span class="range-price">550 Ar/kWh</span></div><div class="tarif-range"><span class="range-label">151 - 300 kWh</span><span class="range-price">650 Ar/kWh</span></div><div class="tarif-range"><span class="range-label">301+ kWh</span><span class="range-price">750 Ar/kWh</span></div></div></div><div class="tarif-card water-card"><div class="tarif-header"><i class="fas fa-tint"></i><h4>Eau</h4></div><div class="tarif-content"><div class="tarif-range"><span class="range-label">0 - 10 m³</span><span class="range-price">2 000 Ar/m³</span></div><div class="tarif-range"><span class="range-label">11 - 25 m³</span><span class="range-price">2 500 Ar/m³</span></div><div class="tarif-range"><span class="range-label">26 - 50 m³</span><span class="range-price">3 000 Ar/m³</span></div><div class="tarif-range"><span class="range-label">51+ m³</span><span class="range-price">3 500 Ar/m³</span></div></div></div></div><div class="tarif-note"><i class="fas fa-info-circle"></i><p>Les tarifs sont donnés à titre indicatif et peuvent varier selon les zones. Consultez votre facture JIRAMA pour les tarifs exacts.</p></div></div></div></div>
@@ -951,11 +955,52 @@
 
     <input type="file" id="importFile" accept=".json" style="display: none;">    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="database.js"></script>
+    
     
     <script src="database.js"></script>
     <script src="cloud-storage.js"></script>
     <script src="worker.js"></script>
     <script src="script.js"></script>
+
+<script>
+// ── Service Worker Registration (Offline Support) ──────────
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then(function(reg) {
+                console.log('[SW] Enregistré, scope:', reg.scope);
+                // Vérifier les mises à jour
+                reg.addEventListener('updatefound', function() {
+                    var newSW = reg.installing;
+                    newSW.addEventListener('statechange', function() {
+                        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('[SW] Mise à jour disponible');
+                            if (confirm('Nouvelle version disponible ! Mettre à jour ?')) {
+                                newSW.postMessage('skipWaiting');
+                                window.location.reload();
+                            }
+                        }
+                    });
+                });
+            })
+            .catch(function(err) {
+                console.warn('[SW] Enregistrement échoué:', err);
+            });
+        // Recharger si le SW prend le contrôle
+        var refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+            if (!refreshing) { refreshing = true; window.location.reload(); }
+        });
+    });
+    // Connexion rétablie
+    window.addEventListener('online', function() {
+        showNotification && showNotification('Connexion rétablie !', 'success');
+    });
+    window.addEventListener('offline', function() {
+        showNotification && showNotification('Mode hors ligne — données locales utilisées', 'info');
+    });
+}
+</script>
+
 </body>
 </html>
