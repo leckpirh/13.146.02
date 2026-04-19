@@ -1307,7 +1307,7 @@ function refreshCalendar() { renderCalendar(); showNotification('Calendrier actu
 // ========================================
 
 function calculateForecast() {
-    if (evolutionData.length < 2) return { hasData: false, message: "Données insuffisantes pour une prévision (minimum 2 mois)" };
+    if (evolutionData.length < 2) return { hasData: false, message: "<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;"> Données insuffisantes pour une prévision (minimum 2 mois)</p>" };
     const lastMonths = [...evolutionData].slice(-3);
     const total = lastMonths.reduce((sum, m) => sum + m.total, 0);
     const average = total / lastMonths.length;
